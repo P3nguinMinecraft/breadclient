@@ -1,6 +1,5 @@
 package com.bread;
 
-import com.bread.feature.BookDupe;
 import com.bread.feature.PacketDelay;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import net.fabricmc.api.ClientModInitializer;
@@ -49,35 +48,5 @@ public class BreadClient implements ClientModInitializer {
 						)
 				)
 		));
-
-		// inventory savestate
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal("dupe").executes(context -> {
-				BookDupe.dupe(0);
-				return 1;
-			}));
-		});
-
-		// chunk ban
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal("chunkban").executes(context -> {
-				BookDupe.dupe(1);
-				return 1;
-			}));
-		});
-
-		// chunk savestate
-		ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal("savestate").executes(context -> {
-				if (!BookDupe.shouldSavestate) {
-					context.getSource().getPlayer().sendMessage(Text.literal("Ready to savestate!"));
-					BookDupe.shouldSavestate = true;
-				} else {
-					context.getSource().getPlayer().sendMessage(Text.literal("Savestate canceled!"));
-					BookDupe.shouldSavestate = false;
-				}
-				return 1;
-			}));
-		}));
 	}
 }

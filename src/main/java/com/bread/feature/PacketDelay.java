@@ -3,12 +3,9 @@ package com.bread.feature;
 import com.bread.BreadConfig;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.*;
@@ -25,19 +22,11 @@ public class PacketDelay {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (!activateKey.isPressed()) releasePackets();
         });
-        HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerBefore(IdentifiedLayer.SUBTITLES, new IdentifiedLayer() {
-            @Override
-            public Identifier id() {
-                return Identifier.of("breadclient", "packet-delay-text-layer");
+        HudElementRegistry.attachElementAfter(Identifier.of("subtitles"), Identifier.of("breadclient", "packet-delay-text-layer"), (context, tickCounter) -> {
+            if (isDelayingPackets() && BreadConfig.packetDelay) {
+                context.drawText(MinecraftClient.getInstance().textRenderer, "Delaying Packets", 4, context.getScaledWindowHeight() - 4 - MinecraftClient.getInstance().textRenderer.fontHeight, 0xffffffff, false);
             }
-
-            @Override
-            public void render(DrawContext context, RenderTickCounter tickCounter) {
-                if (isDelayingPackets() && BreadConfig.packetDelay) {
-                    context.drawText(MinecraftClient.getInstance().textRenderer, "delaying packets", 4, context.getScaledWindowHeight() - 4 - MinecraftClient.getInstance().textRenderer.fontHeight, 0xffffffff, false);
-                }
-            }
-        }));
+        });
     }
 
     private static ArrayList<Packet<?>> delayedPackets = new ArrayList<>();

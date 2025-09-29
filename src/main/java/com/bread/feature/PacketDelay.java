@@ -20,7 +20,7 @@ public class PacketDelay {
     public static void init() {
         activateKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.bread.packetDelay", InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), "category.bread.breadclient"));
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (!activateKey.isPressed()) releasePackets();
+            if (!activateKey.isPressed()) releasePackets(client);
         });
         HudElementRegistry.attachElementAfter(Identifier.of("subtitles"), Identifier.of("breadclient", "packet-delay-text-layer"), (context, tickCounter) -> {
             if (isDelayingPackets() && BreadConfig.packetDelay) {
@@ -29,7 +29,7 @@ public class PacketDelay {
         });
     }
 
-    private static ArrayList<Packet<?>> delayedPackets = new ArrayList<>();
+    private static final ArrayList<Packet<?>> delayedPackets = new ArrayList<>();
 
     public static final Class[] blockedPackets = {
             PlayerActionC2SPacket.class,
@@ -51,9 +51,9 @@ public class PacketDelay {
         delayedPackets.clear();
     }
 
-    private static void releasePackets() {
+    private static void releasePackets(MinecraftClient client) {
         for (Packet<?> packet : delayedPackets) {
-            MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
+            client.getNetworkHandler().sendPacket(packet);
         }
         delayedPackets.clear();
     }

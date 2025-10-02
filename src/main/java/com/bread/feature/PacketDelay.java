@@ -18,7 +18,7 @@ public class PacketDelay {
     private static KeyBinding activateKey;
 
     public static void init() {
-        activateKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.bread.packetDelay", InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), "category.bread.breadclient"));
+        activateKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.bread.packetDelay", InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), KeyBinding.Category.MISC));
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (!activateKey.isPressed()) releasePackets(client);
         });

@@ -1,5 +1,6 @@
 package com.bread.feature;
 
+import com.bread.BreadClient;
 import com.bread.BreadConfig;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -18,7 +19,7 @@ public class PacketDelay {
     private static KeyBinding activateKey;
 
     public static void init() {
-        activateKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.bread.packetDelay", InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), KeyBinding.Category.create(Identifier.of("category.bread.breadclient"))));
+        activateKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.bread.packetDelay", InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), BreadClient.CATEGORY));
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (!activateKey.isPressed()) releasePackets(client);
         });
